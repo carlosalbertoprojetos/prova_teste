@@ -6,7 +6,6 @@ router = DefaultRouter()
 router.register(r"pessoas", PessoaViewSet, basename="pessoa")
 
 urlpatterns = [
-    # path("", include(router.urls)),
     path("", index, name="index"),
     path("api/", include(router.urls)),
 ]
