@@ -1,11 +1,7 @@
-import json
 from django.shortcuts import render
-from django.http import JsonResponse
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
 from .models import Pessoa
 from .serializers import PessoaSerializer
 from .services import (
@@ -19,34 +15,13 @@ from .tasks import calcular_peso_ideal
 
 
 def index(request):
-    return render(request, "pessoas/cadastro_pessoa.html")
-
-
-@csrf_exempt  # Se você estiver usando AJAX sem CSRF (ou adicionar manualmente o CSRF token)
-@require_http_methods(["POST"])
-def criar_pessoa(request):
-    try:
-        # Parse da requisição JSON
-        data = json.loads(request.body)
-
-        # Criação do objeto Pessoa
-        pessoa = Pessoa.objects.create(
-            nome=data.get("nome"),
-            data_nasc=data.get("data_nasc"),
-            cpf=data.get("cpf"),
-            sexo=data.get("sexo"),
-            altura=data.get("altura"),
-            peso=data.get("peso"),
-        )
-
-        # Retorno de sucesso com dados da pessoa
-        return JsonResponse({"id": pessoa.id, "nome": pessoa.nome}, status=201)
-
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=400)
+    return render(request, "pessoas/index.html")
 
 
 class PessoaViewSet(viewsets.ViewSet):
+    queryset = Pessoa.objects.all()
+    serializer_class = PessoaSerializer
+
     def list(self, request):
         pessoas = listar_pessoas()
         serializer = PessoaSerializer(pessoas, many=True)
