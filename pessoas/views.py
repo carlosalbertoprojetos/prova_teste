@@ -8,7 +8,6 @@ from .services import (
     criar_pessoa,
     atualizar_pessoa,
     excluir_pessoa,
-    listar_pessoas,
     obter_pessoa_por_id,
 )
 from .tasks import calcular_peso_ideal
