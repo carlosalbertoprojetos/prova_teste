@@ -100,8 +100,20 @@
                 });
             }
 
+            function getCSRFToken() {
+                let csrfToken = null;
+                const cookies = document.cookie.split(';');
+                cookies.forEach(cookie => {
+                    if (cookie.trim().startsWith('csrftoken=')) {
+                        csrfToken = cookie.trim().split('=')[1];
+                    }
+                });
+                return csrfToken;
+            }
+
             function adicionarPessoa(event) {
                 event.preventDefault();
+
                 let novaPessoa = {
                     nome: $('#nome').val(),
                     data_nasc: $('#data_nasc').val(),
@@ -110,12 +122,21 @@
                     altura: parseFloat($('#altura').val()),
                     peso: parseFloat($('#peso').val())
                 };
-                console.log(novaPessoa); // Verifique os dados antes de enviar
-                $.post(API_URL, novaPessoa, function () {
-                    carregarPessoas();
-                    $('#pessoaForm')[0].reset();
-                }).fail(function (xhr, status, error) {
-                    console.error('Erro ao adicionar pessoa:', status, error);
+
+                $.ajax({
+                    url: 'http://localhost:8000/pessoas/',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken()  // Incluindo o token CSRF nas requisições
+                    },
+                    data: novaPessoa,
+                    success: function () {
+                        carregarPessoas();
+                        $('#pessoaForm')[0].reset();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Erro ao adicionar pessoa:', status, error);
+                    }
                 });
             }
 

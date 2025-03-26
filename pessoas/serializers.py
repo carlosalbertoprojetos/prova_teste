@@ -7,15 +7,7 @@ class PessoaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pessoa
-        fields = ["nome", "data_nasc", "cpf", "sexo", "altura", "peso"]
-        extra_kwargs = {
-            "nome": {"required": True},
-            "data_nasc": {"required": True},
-            "cpf": {"required": True},
-            "sexo": {"required": True},
-            "altura": {"required": True},
-            "peso": {"required": True},
-        }
+        fields = "__all__"
 
-    # def get_peso_ideal(self, obj):
-    #     return obj.calcular_peso_ideal()
+    def get_peso_ideal(self, obj):
+        return obj.calcular_peso_ideal()
